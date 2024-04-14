@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogador de Multimedia</title>
+</head>
+<body>
+    <h1>Cargar Archivos Multimedia</h1>
+
+    <!-- Formulario de carga de archivos -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput" accept="image/*, video/*, audio/*" required>
+        <button type="button" onclick="subirArchivo()">Subir Archivo</button>
+    </form>
+
+    <hr>
+
+    <!-- Área para mostrar los archivos cargados -->
+    <div id="mediaContainer">
+        <!-- Aquí se cargará el contenido multimedia -->
+    </div>
+
+    <script>
+        // Función para subir archivos mediante AJAX
+        function subirArchivo() {
+            var formData = new FormData(document.getElementById("uploadForm"));
+
+            // Realizar petición AJAX para subir el archivo
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Una vez cargado el archivo, cargar la respuesta dinámicamente
+                    cargarContenido('media.php');
+                }
+            };
+            xhttp.open("POST", 'upload.php', true);
+            xhttp.send(formData);
+        }
+
+        // Función para cargar contenido multimedia
+        function cargarContenido(archivo) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("mediaContainer").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", archivo, true);
+            xhttp.send();
+        }
+
+        // Cargar contenido multimedia al iniciar la página
+        window.onload = function() {
+            cargarContenido('media.php');
+        };
+    </script>
+</body>
+</html>
