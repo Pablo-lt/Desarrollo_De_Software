@@ -10,11 +10,11 @@
     <header>
         <nav>
             <ul>
-                <li><a href="General.html"><img src="Resources/icon_general.png"></a></li>
-                <li><a href="Imagenes.html"><img src="Resources/icon_images.png"></a></li>
-                <li><a href="Videos.html"><img src="Resources/icon_videos.png"></a></li>
-                <li><a href="Audios.html"><img src="Resources/icon_audios.png"></a></li>
-                <li><a href="#" id="modoNoche"><img id="modoNocheIcon" src="resources/icon_moon.png" alt="modoNoche"></a></li>
+                <li><a href="General.html"><img src="Resources/house_home_icon.png"></a></li>
+                <li><a href="Imagenes.html"><img src="Resources/camera_icon.png"></a></li>
+                <li><a href="Videos.html"><img src="Resources/camera_video_icon.png"></a></li>
+                <li><a href="Audios.html"><img src="Resources/music_icon.png"></a></li>
+                <li><a href="#" id="modoNoche"><img id="modoNocheIcon" src="resources/moon_sharp_icon.png" alt="modoNoche"></a></li>
             </ul>
         </nav>
     </header>
@@ -48,10 +48,10 @@
 
             if (modoNocheActivo) {
                 document.body.classList.add('modo-noche');
-                modoNocheIcon.src = 'Resources/icon_sun.png'; // Cambiar a icono modo noche activado
+                modoNocheIcon.src = 'Resources/sun_fill_icon.png'; // Cambiar a icono modo noche activado
             } else {
                 document.body.classList.remove('modo-noche');
-                modoNocheIcon.src = 'Resources/icon_moon.png'; // Cambiar a icono modo noche desactivado
+                modoNocheIcon.src = 'Resources/moon_sharp_icon.png'; // Cambiar a icono modo noche desactivado
             }
         });
     </script>
