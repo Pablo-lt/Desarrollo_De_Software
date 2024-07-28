@@ -1,0 +1,2 @@
+En esta carpeta deberá aparecer todo contenido multimedia que se cargue mediante la app. 
+Probablemente separar las carpetas de cada tipo resulte importante así que probemos manteniendo el formato.
