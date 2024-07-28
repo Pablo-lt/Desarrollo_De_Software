@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Página Web</title>
+    <link rel="stylesheet" href="Style.css"> <!-- Enlace al archivo CSS externo -->
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="General.html"><img src="Resources/house_home_icon.png"></a></li>
+                <li><a href="Videos.html"><img src="Resources/camera_video_icon.png"></a></li>
+                <li><a href="Audios.html"><img src="Resources/music_icon.png"></a></li>
+                <li><a href="#" id="modoNoche"><img src="Resources/moon_sharp_icon.png"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Bienvenido a mi página</h1>
+        <p>Zona de imagenes.</p>
+    </main>
+
+    <footer>
+        <button onclick="scrollToTop()">Volver Arriba</button>
+        <button onclick="showCredits()">Créditos</button>
+    </footer>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showCredits() {
+            alert('Desarrollado por [Tu Nombre]');
+        }
+
+        // Cambiar a modo noche al hacer clic en "Modo Noche"
+        const modoNocheBtn = document.getElementById('modoNoche');
+        modoNocheBtn.addEventListener('click', () => {
+            document.body.classList.toggle('modo-noche');
+        });
+    </script>
+</body>
+</html>

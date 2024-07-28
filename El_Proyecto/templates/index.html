@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogador de Multimedia</title>
+</head>
+<body>
+    <h1>Cargar Archivos Multimedia</h1>
+
+    <!-- Formulario de carga de archivos -->
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput" accept="image/*, video/*, audio/*" required>
+        <button type="submit">Subir Archivo</button>
+    </form>
+
+    <hr>
+
+    <!-- Área para mostrar los archivos cargados -->
+    <div id="mediaContainer">
+        <!-- Aquí se cargará el contenido multimedia -->
+        {% for file in media_files %}
+            {% if file.ext in ['jpg', 'jpeg', 'png'] %}
+                <img src="/uploads/{{ file.name }}" alt="Imagen" style="max-width: 300px;"><br>
+            {% elif file.ext in ['mp4', 'webm', 'ogg'] %}
+                <video controls style="max-width: 300px;">
+                    <source src="/uploads/{{ file.name }}" type="video/{{ file.ext }}">
+                </video><br>
+            {% elif file.ext in ['mp3', 'wav'] %}
+                <audio controls>
+                    <source src="/uploads/{{ file.name }}" type="audio/{{ file.ext }}">
+                </audio><br>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>
