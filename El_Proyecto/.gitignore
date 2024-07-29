@@ -1,0 +1,9 @@
+*.env
+env/
+__pycache__/
+*.cache 
+*.json
+.pytest_cache/
+.vscode/
+*.log
+*.tmp
