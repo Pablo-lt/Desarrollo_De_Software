@@ -18,6 +18,7 @@ def create_app() -> None:
     
     #https://flask.palletsprojects.com/en/3.0.x/api/#flask.Flask
     app = Flask(__name__)
+    app.url_map.strict_slashes=False
     f = config.factory(app_context if app_context else 'development')
     app.config.from_object(f)
 
