@@ -12,13 +12,3 @@ def index():
     response_builder.add_message("Bienvenidos").add_status_code(200).add_data({'title': 'API Auth'})
     response = response_builder.build()
     return response_schema.dump(response), 200
-
-
-@home.route('/users', methods=['GET'])
-def users(): 
-    response_builder = ResponseBuilder()
-    response_builder.add_message("Bienvenidos").add_status_code(200).add_data({'title': 'API Auth'})
-    response = response_builder.build()
-    return response_schema.dump(response), 200
-
-

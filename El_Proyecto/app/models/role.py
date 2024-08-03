@@ -20,3 +20,6 @@ class Role (db.Model):
     def remove_user(self, user):
         if user in self.users:
             self.users.remove(user)
+
+    def list_users(self):
+        return self.users

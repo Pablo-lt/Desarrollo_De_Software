@@ -18,7 +18,7 @@ class User(db.Model):
     #Flask Web Development Capitulo: Database Relationships Revisited Pag 49,149 
     roles = db.relationship("Role", secondary=users_roles, back_populates='users')
     
-        # Relacion de file 
+    # Relacion de file 
     files = db.relationship('File', back_populates='user')
 
     def __init__(self, user_data: UserData = None):
@@ -31,5 +31,8 @@ class User(db.Model):
     def remove_role(self, role):
         if role in self.roles:
             self.roles.remove(role)
+
+    def list_role(self):
+        return self.roles
     
     

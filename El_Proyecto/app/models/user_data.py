@@ -14,3 +14,13 @@ class UserData(db.Model):
     #Flask Web Development Capitulo: Database Relationships Revisited Pag 49,149 
     user = db.relationship("User", back_populates='data', uselist=False)
     
+    #Relacion Muchos a Uno bidireccional con Profile
+    profile_id = db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id'))
+    profile = db.relationship("Profile", back_populates='data')
+
+    def __init__(self, firstname: str = None, lastname: str = None, phone: str = None, description : str =None, profile = None):
+        self.firstname = firstname
+        self.lastname = lastname
+        self.phone = phone
+        self.description = description
+        self.profile = profile
