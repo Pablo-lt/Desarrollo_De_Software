@@ -1,0 +1,1 @@
+pip install flask, sqlalchemy, python-dotenv, pathlib, marshmallow, flask_sqlalchemy, flask_migrate,flask_marshmallow, pytest, python-magic, psycopg2, sqlalchemy_easy_softdelete, passlib, 
