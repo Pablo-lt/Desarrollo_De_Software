@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List
 from app.models import Profile
 from app import db
 
@@ -31,4 +31,3 @@ class ProfileRepository:
             return db.session.query(Profile).filter(Profile.id == id).one()
         except:
             return None
-        

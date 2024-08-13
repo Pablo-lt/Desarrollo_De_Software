@@ -1,36 +1,56 @@
 from typing import List
-from app.models import Profile, User
+from app.models import Profile
 from app.repository import ProfileRepository
-from datetime import datetime, timezone
 
 repository = ProfileRepository()
 
 class ProfileService:
-    def save(self, profile: Profile, user: User) -> Profile:
-        profile.created_by_id = user.id
-        profile.updated_by_id = user.id
-        profile.created_at = datetime.now(timezone.utc)
-        profile.updated_at = datetime.now(timezone.utc)
-        
-        return repository.save(profile)
+    """
+    ProfileService class
+    """
+    def __init__(self):
+        pass
 
-    def update(self, profile: Profile, id: int, user: User) -> Profile:
-        existing_profile = repository.find(id)
-        if existing_profile:
-            existing_profile.updated_by_id = user.id
-            existing_profile.updated_at = datetime.now(timezone.utc)
-            existing_profile.name = profile.name 
-            return repository.update(existing_profile, id)
-        return None
+    def save(self, profile: Profile) -> Profile:
+        """
+        Save a profile
+        :param profile: Profile
+        :return: Profile
+        """
+        #TODO: Implementar auditoria
+        repository.save(profile)
+        return profile
 
-    def delete(self, profile: Profile, user: User) -> None:
-        profile.updated_by_id = user.id
-        profile.updated_at = datetime.now(timezone.utc)
-        
+    def update(self, profile: Profile, id: int) -> Profile:
+        """
+        Update a profile
+        :param profile: Profile
+        :param id: int
+        :return: Profile
+        """
+        #TODO: Implementar auditoria
+        repository.update(profile, id)
+        return profile
+
+    def delete(self, profile: Profile) -> None:
+        """
+        Delete a profile
+        :param profile: Profile
+        """
+        #TODO: Implementar auditoria
         repository.delete(profile)
 
     def all(self) -> List[Profile]:
+        """
+        Get all profiles
+        :return: List[Profile]
+        """
         return repository.all()
 
     def find(self, id: int) -> Profile:
+        """
+        Get a profile by id
+        :param id: int
+        :return: Profile
+        """
         return repository.find(id)

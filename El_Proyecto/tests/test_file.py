@@ -1,11 +1,12 @@
-import sys
 import os
 import unittest
-from unittest.mock import patch, MagicMock
 from app import create_app, db
-from app.models.file import File, FileService
+from app.models import File
+from app.services import FileService
 
-class TestFileManager(unittest.TestCase):
+file_service = FileService()
+
+class FileTestCase(unittest.TestCase):
 
     def setUp(self):
         os.environ['FLASK_CONTEXT'] = 'testing'
@@ -13,78 +14,91 @@ class TestFileManager(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        self.file_service = FileService()
+        self.REALNAME = "test_file"
+        self.FILETYPE = "txt"
+        self.USER_ID = 1
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
 
-    @patch('file_manager.magic.Magic')
-    def test_identify_file_type(self, mock_magic):
-        mock_magic_instance = MagicMock()
-        mock_magic.return_value = mock_magic_instance
-
-        mock_magic_instance.from_file.return_value = 'audio/mpeg'
-        self.assertEqual(File.identify_file_type('test.mp3'), 'audio')
-
-        mock_magic_instance.from_file.return_value = 'video/mp4'
-        self.assertEqual(File.identify_file_type('test.mp4'), 'video')
-
-        mock_magic_instance.from_file.return_value = 'image/jpeg'
-        self.assertEqual(File.identify_file_type('test.jpg'), 'imagen')
-
-        mock_magic_instance.from_file.return_value = 'text/plain'
-        self.assertEqual(File.identify_file_type('test.txt'), 'desconocido')
-
-    @patch('file_manager.File.identify_file_type')
-    @patch('file_manager.shutil.move')
-    def test_move_file(self, mock_move, mock_identify):
-        mock_identify.return_value = 'audio'
-        base_dir = '/tmp/base'
-        new_path = File.move_file('/tmp/test_audio.mp3', base_dir)
-        self.assertEqual(new_path, os.path.join(base_dir, 'audio', 'test_audio.mp3'))
-        mock_move.assert_called_once()
-
-    def test_file_crud(self):
-        file = File(id_name='test123', realname='test.txt', filetype='txt', user_id=1)
-        
-        # Create
-        self.file_service.save(file)
+    def test_file_save(self):
+        file = self.__get_file()
+        file_service.save(file)
         self.assertIsNotNone(file.id_name)
+        self.assertEqual(file.realname, self.REALNAME)
+        self.assertEqual(file.filetype, self.FILETYPE)
 
-        # Read
-        found_file = self.file_service.find(file.id_name)
+    def test_file_delete(self):
+        file = self.__get_file()
+        file_service.save(file)
+        file_service.delete(file)
+        self.assertIsNone(file_service.find(file.id_name))
+
+    def test_file_update(self):
+        file = self.__get_file()
+        file_service.save(file)
+        new_realname = "updated_file"
+        file.realname = new_realname
+        file_service.update(file, file.id_name)
+        updated_file = file_service.find(file.id_name)
+        self.assertEqual(updated_file.realname, new_realname)
+
+    def test_file_find(self):
+        file = self.__get_file()
+        file_service.save(file)
+        found_file = file_service.find(file.id_name)
         self.assertIsNotNone(found_file)
-        self.assertEqual(found_file.realname, 'test.txt')
+        self.assertEqual(found_file.realname, self.REALNAME)
 
-        # Update
-        file.realname = 'updated.txt'
-        self.file_service.update(file, file.id_name)
-        updated_file = self.file_service.find(file.id_name)
-        self.assertEqual(updated_file.realname, 'updated.txt')
-
-        # Delete
-        self.file_service.delete(file)
-        self.assertIsNone(self.file_service.find(file.id_name))
+    def test_all(self):
+        file = self.__get_file()
+        file_service.save(file)
+        files = file_service.all()
+        self.assertGreaterEqual(len(files), 1)
 
     def test_sanitize_filename(self):
+        # Caso 1: Nombre de archivo con caracteres no permitidos
+        dirty_name = "Test File!@#.txt"
         with self.assertRaises(ValueError):
-            self.file_service.sanitize_filename("Test File!@#.txt")
+            file_service.sanitize_filename(dirty_name)
 
-        self.assertEqual(self.file_service.sanitize_filename("valid_file_name"), "valid_file_name")
-        self.assertEqual(self.file_service.sanitize_filename("UPPERCASE_FILE"), "uppercase_file")
+        # Caso 2: Nombre de archivo válido
+        valid_name = "valid_file_name"
+        try:
+            sanitized = file_service.sanitize_filename(valid_name)
+            self.assertEqual(sanitized, valid_name.lower())
+        except ValueError:
+            self.fail("sanitize_filename raised ValueError unexpectedly!")
+
+        # Caso 3: Nombre de archivo con mayúsculas (debería convertirse a minúsculas)
+        upper_name = "UPPERCASE_FILE"
+        try:
+            sanitized = file_service.sanitize_filename(upper_name)
+            self.assertEqual(sanitized, upper_name.lower())
+        except ValueError:
+            self.fail("sanitize_filename raised ValueError unexpectedly!")
 
     def test_validate_extension(self):
-        self.assertEqual(self.file_service.validate_extension("pdf"), "pdf")
+        valid_type = "pdf"
+        invalid_type = "exe"
+        self.assertEqual(file_service.validate_extension(valid_type), valid_type)
         with self.assertRaises(ValueError):
-            self.file_service.validate_extension("exe")
+            file_service.validate_extension(invalid_type)
 
     def test_generate_unique_filename(self):
-        unique_name = self.file_service.generate_unique_filename("test", "txt")
-        self.assertIn("test", unique_name)
-        self.assertIn("txt", unique_name)
-        self.assertGreater(len(unique_name), len("test") + len("txt") + 1)
+        unique_name = file_service.generate_unique_filename(self.REALNAME, self.FILETYPE)
+        self.assertIn(self.REALNAME, unique_name)
+        self.assertIn(self.FILETYPE, unique_name)
+        self.assertGreater(len(unique_name), len(self.REALNAME) + len(self.FILETYPE) + 1)
+
+    def __get_file(self) -> File:
+        file = File()
+        file.realname = self.REALNAME
+        file.filetype = self.FILETYPE
+        file.user_id = self.USER_ID
+        return file
 
 if __name__ == '__main__':
     unittest.main()

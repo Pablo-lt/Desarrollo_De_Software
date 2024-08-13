@@ -1,0 +1,113 @@
+@startuml Diagrama de Clases
+
+' Definición de la clase base Model
+class Model {
+ clase de SQLAlchemy
+}
+
+' Definición de la clase User con sus atributos y métodos
+class User {
+    - id: int
+    - username: str
+    - password: str
+    - email: str
+    + add_role(role)
+    + remove_role(role)
+    + list_role()
+}
+
+' Definición de la clase UserData
+class UserData {
+    - id: int
+    - firstname: str
+    - lastname: str
+    - phone: str
+    - description: str
+    - user_id: int
+    - profile_id: int
+}
+
+' Definición de la clase Profile
+class Profile {
+    - id: int
+    - name: str
+}
+
+' Definición de la clase Role con sus atributos y métodos
+class Role {
+    - id: int
+    - name: str
+    - description: str
+    + add_user(user)
+    + remove_user(user)
+    + list_users()
+}
+
+' Definición de la clase AuditMixin
+class AuditMixin {
+    - created_at: datetime
+    - updated_at: datetime
+    - created_by_id: int
+    - updated_by_id: int
+}
+
+' Definición de la clase SoftDeleteMixin
+class SoftDeleteMixin {
+    - deleted_at: datetime
+}
+
+' Definición de la clase File
+class File {
+    - id_name: str
+    - realname: str
+    - filetype: str
+    - user_id: int
+    - hora: datetime
+}
+
+' Definición de la clase Media_type
+class Media_type {
+    - file_id: str
+    - name: str
+    - file_path: str
+    - file_type: str
+    - size: int
+}
+
+' Relaciones de herencia actualizadas
+Model <|-- User
+SoftDeleteMixin <|-- User
+AuditMixin <|-- User
+
+Model <|-- UserData
+SoftDeleteMixin <|-- UserData
+AuditMixin <|-- UserData
+
+Model <|-- File
+SoftDeleteMixin <|-- File
+AuditMixin <|-- File
+
+Model <|-- Profile
+SoftDeleteMixin <|-- Profile
+AuditMixin <|-- Profile
+
+Model <|-- Role
+Model <|-- Media_type
+
+
+' Relación de composición entre User y UserData
+User "1" *-- "1" UserData : contiene
+
+' Relación uno a muchos entre Profile y UserData
+Profile "1" -- "n" UserData : tiene
+
+' Relación muchos a muchos entre User y Role
+User "m" -- "n" Role : tiene
+
+' Relación uno a muchos entre User y File
+User "1" -- "n" File : tiene
+
+' Relación uno a uno entre File y Media_type
+File "1" -- "1" Media_type : tiene
+
+@enduml

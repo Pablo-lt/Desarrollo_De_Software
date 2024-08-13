@@ -2,8 +2,6 @@ from datetime import datetime as dt
 from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-
 
 class AuditMixin(object):
     """
@@ -28,5 +26,5 @@ class AuditMixin(object):
         return relationship('User', primaryjoin='User.id == %s.updated_by_id' % cls.__name__, remote_side='User.id')
     
     #Audit columns - legacy xD
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime, nullable=False, default=dt.now())
+    updated_at = Column(DateTime, nullable=False, default=dt.now(), onupdate=dt.now())
